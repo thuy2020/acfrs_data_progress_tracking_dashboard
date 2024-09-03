@@ -1,0 +1,12 @@
+name: acfrs_data_progress_tracking_dashboard
+title: acfrs_data_progress_tracking_dashboard
+username: govfin
+account: govfin
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12410518
+bundleId: 9057022
+url: https://govfin.shinyapps.io/acfrs_data_progress_tracking_dashboard/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
