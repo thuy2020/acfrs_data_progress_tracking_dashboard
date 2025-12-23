@@ -1,0 +1,17 @@
+,state_abbreviation,population,name,category,year
+1,NV,3104624,nevada,state,2023
+2,NJ,311552,newark city,municipality,2023
+3,NJ,159759,paterson city,municipality,2023
+4,MS,153705,jackson city,municipality,2023
+5,TX,114452,odessa city,municipality,2023
+6,GA,108064,south fulton city,municipality,2023
+7,MA,530820,plymouth county,county,2023
+8,IN,498707,lake county,county,2023
+9,LA,440794,jefferson parish,county,2023
+10,MN,439884,dakota county,county,2023
+11,OK,295514,cleveland county,county,2023
+12,AK,291244,anchorage municipality,county,2023
+13,AR,284329,benton county,county,2023
+14,AR,245866,washington county,county,2023
+,DC,,DC public schools (Blended unit),school,2023
+,TN,,Metropolitan Nashville Public Schools (Blended unit),school,2023

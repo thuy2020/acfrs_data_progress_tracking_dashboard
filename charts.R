@@ -8,14 +8,19 @@ library(scales)
 library(tidyr)
 library(stringr)
 
-data <- readxl::read_excel("data/progress_report.xlsx") %>% 
-  filter(!category %in% c("municipalities_all_place_division", 
-                          "municipalities_incorporated", "municipalities_incorporated_others", 
-                          "municipalities_others")) %>% clean_names() %>% 
+data <- readxl::read_excel("data/progress_report.xlsx", sheet = "collected") %>% clean_names() %>% 
   mutate(across(contains("pct"), ~ . * 100)) 
 
-#data %>% View()
+county_by_state <- read.csv("data/county_by_state.csv") %>% clean_names() %>% 
+  select(-1)
+municipality_by_state <- read.csv("data/municipality_by_state.csv")%>% clean_names() %>% 
+  select(-1)
+school_by_state <- read.csv("data/school_by_state.csv")%>% clean_names() %>% 
+  select(-1)
 
+county_by_state %>% colnames()
+municipality_by_state %>% colnames()
+school_by_state %>% colnames()
 #########Bullet chart################
 create_bullet_chart <- function(entityType, metric) {
   # Define the columns to select based on the metric
@@ -52,7 +57,74 @@ create_bullet_chart <- function(entityType, metric) {
     theme_minimal()
 }
 
+test2 <- read.csv("data/test2.csv")
+##### coverage by state####
+
+create_coverage_chart <- function(df, metric = c("pop", "count")) {
+  metric <- match.arg(metric)
+  
+  df <- df %>% 
+    mutate(
+      coverage = ifelse(metric == "pop", pop_pct_accounted, count_pct_accounted),
+      State = state.abb
+    )
+  
+  ggplot(df, aes(x = fct_reorder(State, coverage), y = coverage)) +
+    geom_col(fill = "#05407F") +
+    coord_flip() +
+    labs(
+      y = ifelse(metric == "pop", "% Population Covered", "% Entities Covered"),
+      x = "State",
+      title = "ACFR Coverage by State"
+    ) +
+    theme_minimal()
+}
 
 
-#########Top 100#########
 
+
+
+####View all entities by state####
+
+
+state_data <- readRDS("data/state_data.rds") %>% 
+  mutate(entity_type = "state",
+         flg_muni = NA, 
+         flg_backfilled = NA, 
+         flg_county = NA)
+
+county_data <- readRDS("data/county_data.rds") %>% 
+  mutate(entity_type = "county", 
+         flg_county = NA)
+
+municipal_data <- readRDS("data/municipal_data.rds") %>% 
+  select(-c(latitude, longitude)) %>% 
+  mutate(entity_type = "municipality", 
+         flg_muni = NA, 
+         flg_backfilled = NA,
+         urban_population = NA,
+         pct_urban_population = NA)
+
+school_district_data <- readRDS("data/school_district_data.rds") %>% 
+  select(-c(latitude, longitude, student_enrollment)) %>% 
+  mutate(entity_type = "school_district",
+         flg_muni = NA, 
+         flg_backfilled = NA, 
+         flg_county = NA,
+         urban_population = NA,
+         pct_urban_population = NA, 
+         geo_id = NA)
+
+all_entity <- rbind(state_data, county_data, municipal_data,
+                    school_district_data) %>% 
+  mutate(
+    entity_level = case_when(
+      grepl("school", entity_type, ignore.case = TRUE) ~ "School District",
+      flg_county == 1 ~ "County",
+      flg_muni == 1 ~ "Municipality",
+      TRUE ~ "State Government"
+    )
+  ) %>% 
+  select(-c(entity_id, document_url, entity_type, geo_id, state_abbr)) %>% 
+  mutate(entity_name = tools::toTitleCase(entity_name)) %>% 
+  select(state_name, entity_name, entity_level, everything())

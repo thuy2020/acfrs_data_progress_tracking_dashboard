@@ -1,0 +1,10 @@
+name: acfrs_data_progress_tracking_dashboard
+title:
+username: reason
+account: reason
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12875243
+bundleId: 11092282
+url: https://reason.shinyapps.io/acfrs_data_progress_tracking_dashboard/
+version: 1
